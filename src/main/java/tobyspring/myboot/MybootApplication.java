@@ -20,6 +20,7 @@ public class MybootApplication {
         //Spring Container & Bean 등록
         GenericApplicationContext applicationContext = new GenericApplicationContext();
         applicationContext.registerBean(HelloController.class); //빈 등록
+        applicationContext.registerBean(SimpleHelloService.class);
         applicationContext.refresh();
 
         //Servlet Container & Servlet 등록
