@@ -3,18 +3,30 @@ package tobyspring.myboot;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServer;
 import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
-import org.springframework.web.context.support.GenericWebApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
+@Configuration
 public class MybootApplication {
 
+    @Bean
+    public HelloController helloController(HelloService helloService) {
+        return new HelloController(helloService);
+    }
+
+    @Bean
+    public HelloService helloService() {
+        return new SimpleHelloService();
+    }
+
     public static void main(String[] args) {
-        GenericWebApplicationContext applicationContext = new GenericWebApplicationContext() {
+        AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext() {
             @Override
             protected void onRefresh() {
                 super.onRefresh();
 
-                //Servlet Container 초기화 & Servlet 등록
                 ServletWebServerFactory serverFactory = new TomcatServletWebServerFactory();
                 WebServer webServer = serverFactory.getWebServer(servletContext ->
                         servletContext.addServlet("dispatcherServlet",
@@ -24,8 +36,7 @@ public class MybootApplication {
             }
         };
 
-        applicationContext.registerBean(HelloController.class); //빈 등록
-        applicationContext.registerBean(SimpleHelloService.class);
+        applicationContext.register(MybootApplication.class);
         applicationContext.refresh();
     }
 }
