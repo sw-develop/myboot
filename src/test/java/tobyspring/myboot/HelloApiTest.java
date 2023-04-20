@@ -24,4 +24,14 @@ public class HelloApiTest {
         assertThat(res.getHeaders().getFirst(HttpHeaders.CONTENT_TYPE)).startsWith(MediaType.TEXT_PLAIN_VALUE);
         assertThat(Objects.requireNonNull(res.getBody()).trim()).isEqualTo("Hello Spring");
     }
+
+    @Test
+    void failsHelloApi() {
+        TestRestTemplate restTemplate = new TestRestTemplate();
+
+        String url = "http://localhost:8080/hello?name=";
+        ResponseEntity<String> res = restTemplate.getForEntity(url, String.class);
+
+        assertThat(res.getStatusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
